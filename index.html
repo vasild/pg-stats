@@ -1,0 +1,423 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+        <title>Полети</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript">
+
+function msec_to_hmm(msec) {
+    /* Remove leading zero from e.g. '03:45' */
+    return(Number(Highcharts.dateFormat('%H', msec)) +
+           Highcharts.dateFormat(':%M', msec));
+}
+
+function create_the_chart(flights_series) {
+    var navigator_data = flights_series[0].data.concat(flights_series[1].data);
+
+    var per_year = Array();
+    var cur_flight;
+
+    for (var i = 0; i < flights_series.length; i++) {
+        for (var j = 0; j < flights_series[i].data.length; j++) {
+
+            cur_flight = flights_series[i].data[j];
+            var cur_flight_hours = cur_flight[1] / 3600000;
+
+            var year = (new Date(cur_flight[0])).getFullYear();
+            var year_beg = Date.UTC(year,  1 - 1,  1);
+            var year_end = Date.UTC(year, 12 - 1, 31);
+
+            if (per_year.length == 0) {
+                /* This is the first entry, start with its date instead of
+                Jan 1 on its year. */
+                per_year.push([cur_flight[0], cur_flight_hours]);
+                per_year.push([year_end, cur_flight_hours]);
+            } else if (per_year[per_year.length - 1][0] != year_end) {
+                /* New year. */
+                per_year.push([year_beg, cur_flight_hours]);
+                per_year.push([year_end, cur_flight_hours]);
+            } else {
+                /* Same year, increment the amount. */
+                per_year[per_year.length - 2][1] += cur_flight_hours;
+                per_year[per_year.length - 1][1] += cur_flight_hours;
+            }
+        }
+    }
+    /* For the last year do not use Dec 31, but the date of the last entry. */
+    per_year[per_year.length - 1][0] = cur_flight[0];
+
+    var per_year_series = {
+        name: 'per year',
+        color: '#CCCCCC',
+        yAxis: 'per_year_y_axis',
+        type: 'area',
+        zIndex: -1,
+        data: per_year,
+    };
+
+    flights_series.push(per_year_series);
+
+    $("#container").highcharts("StockChart", {
+        chart: {
+            type: 'column',
+            zoomType: 'x',
+        },
+        navigator: {
+            height: 30,
+            series: {
+                data: navigator_data,
+	        type: 'column',
+	        color: '#888888',
+            },
+        },
+        rangeSelector: {
+            /* From "1m, 3m, 6m, YTD, 1y, All" select "All". */
+            selected: 5,
+        },
+        title: {
+            text: 'Полети',
+        },
+        /*
+        subtitle: {
+            text: 'полети',
+        },
+        */
+        xAxis: {
+            type: 'datetime',
+            ordinal: false,
+            labels: {
+                formatter: function () {
+                    return(Highcharts.dateFormat('%d %b %Y', this.value));
+                }
+            },
+            title: {
+                text: 'дата'
+            },
+        },
+        yAxis: [
+            {
+                id: 'per_flight_y_axis',
+                min: 0,
+                type: 'datetime',
+                labels: {
+                    formatter: function () {
+                        return(msec_to_hmm(this.value));
+                    }
+                },
+                title: {
+                    text: 'часове / полет'
+                },
+            },
+            {
+                id: 'per_year_y_axis',
+                min: 0,
+                type: 'linear',
+                gridLineDashStyle: 'LongDash',
+                opposite: true,
+                title: {
+                    text: 'часове / година'
+                },
+            },
+        ],
+        tooltip: {
+            formatter: function() {
+                return(
+                    Highcharts.dateFormat('%b %d %Y', this.x) +
+                    ': ' + msec_to_hmm(this.y));
+            }
+        },
+        legend: {
+            enabled: true,
+            align: 'center',
+            layout: 'vertical',
+            verticalAlign: 'top',
+            y: 50,
+            borderWidth: 0
+        },
+        plotOptions: {
+            column: {
+                pointWidth: 2
+            },
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        click: function () {
+                            window.open(
+                                'http://www.paraglidingforum.com/leonardo/tracks/world/' +
+                                Highcharts.dateFormat('%Y.%m.%d', this.x) +
+                                '/brand:all,cat:0,class:all,xctype:all,club:all,pilot:0_19778,takeoff:all');
+                        }
+                    }
+                },
+                dataGrouping: {
+                    enabled: false
+                }
+            }
+        },
+        series: flights_series
+    });
+}
+
+function fetch_data_and_create_the_chart() {
+    //var jqxhr = $.getJSON("data.json", function() { console.log("success"); } )
+    //    .done(function() { console.log("second success"); } )
+    //    .fail(function() { /* Why it fails? */ console.log("error"); } )
+    //    .always(function() { console.log("complete"); } );
+    //// Perform other work here ...
+    //// Set another completion function for the request above
+    //jqxhr.complete(function() { console.log("second complete"); } );
+    var flights_series =
+        [{
+            name: 'Gradient Bright 3',
+            color: '#2F7ED8',
+            yAxis: 'per_flight_y_axis',
+            data: [
+                [Date.UTC(2008, 7 - 1, 7), 256000],
+                [Date.UTC(2008, 8 - 1, 28), 99000],
+                [Date.UTC(2008, 8 - 1, 30), 390000],
+                [Date.UTC(2008, 8 - 1, 31), 4500000],
+                [Date.UTC(2008, 9 - 1, 7), 6480000],
+                [Date.UTC(2008, 9 - 1, 7, 1), 1020000],
+                [Date.UTC(2008, 9 - 1, 8), 200000],
+                [Date.UTC(2008, 9 - 1, 11), 2880000],
+                [Date.UTC(2008, 9 - 1, 28), 3007000],
+                [Date.UTC(2008, 9 - 1, 29), 1406000],
+                [Date.UTC(2008, 10 - 1, 9), 1993000],
+                [Date.UTC(2008, 10 - 1, 11), 1870000],
+                [Date.UTC(2008, 10 - 1, 12), 5095000],
+                [Date.UTC(2008, 11 - 1, 4), 485000],
+                [Date.UTC(2008, 11 - 1, 8), 219000],
+                [Date.UTC(2008, 11 - 1, 9), 1919000],
+                [Date.UTC(2009, 2 - 1, 14), 4080000],
+                [Date.UTC(2009, 4 - 1, 5), 4569000],
+                [Date.UTC(2009, 5 - 1, 4), 3840000],
+                [Date.UTC(2009, 5 - 1, 4, 1), 3054000],
+                [Date.UTC(2009, 5 - 1, 9), 9095000],
+                [Date.UTC(2009, 5 - 1, 10), 2083000],
+                [Date.UTC(2009, 5 - 1, 31), 1026000],
+                [Date.UTC(2009, 5 - 1, 31, 1), 5400000],
+                [Date.UTC(2009, 6 - 1, 13), 3600000],
+                [Date.UTC(2009, 7 - 1, 5), 2892000],
+                [Date.UTC(2009, 7 - 1, 16), 1356000],
+                [Date.UTC(2009, 7 - 1, 18), 7621000],
+                [Date.UTC(2009, 7 - 1, 21), 1895000],
+                [Date.UTC(2009, 8 - 1, 16), 1631000],
+                [Date.UTC(2009, 8 - 1, 18), 1309000],
+                [Date.UTC(2009, 8 - 1, 22), 5227000],
+                [Date.UTC(2009, 8 - 1, 23), 2098000],
+                [Date.UTC(2009, 9 - 1, 1), 1719000],
+                [Date.UTC(2009, 9 - 1, 3), 4118000],
+                [Date.UTC(2009, 9 - 1, 5), 8771000],
+                [Date.UTC(2009, 9 - 1, 21), 1800000],
+                [Date.UTC(2009, 9 - 1, 22), 5460000],
+                [Date.UTC(2009, 10 - 1, 10), 5577000],
+                [Date.UTC(2010, 3 - 1, 22), 1020000],
+                [Date.UTC(2010, 3 - 1, 27), 919000],
+                [Date.UTC(2010, 4 - 1, 11), 6854000],
+                [Date.UTC(2010, 4 - 1, 18), 1175000],
+                [Date.UTC(2010, 4 - 1, 28), 5504000],
+                [Date.UTC(2010, 4 - 1, 30), 5583000],
+                [Date.UTC(2010, 5 - 1, 1), 2196000],
+                [Date.UTC(2010, 5 - 1, 1, 1), 2246000],
+                [Date.UTC(2010, 5 - 1, 2), 1872000],
+                [Date.UTC(2010, 5 - 1, 2, 1), 1276000],
+                [Date.UTC(2010, 5 - 1, 8), 758000],
+                [Date.UTC(2010, 5 - 1, 26), 4348000],
+                [Date.UTC(2010, 6 - 1, 7), 6791000],
+                [Date.UTC(2010, 6 - 1, 8), 8232000],
+                [Date.UTC(2010, 6 - 1, 12), 8013000],
+                [Date.UTC(2010, 6 - 1, 13), 5109000],
+                [Date.UTC(2010, 7 - 1, 12), 7024000],
+                [Date.UTC(2010, 7 - 1, 16), 2905000],
+                [Date.UTC(2010, 7 - 1, 17), 800000],
+                [Date.UTC(2010, 7 - 1, 17, 1), 4260000],
+                [Date.UTC(2010, 8 - 1, 14), 1800000],
+                [Date.UTC(2010, 8 - 1, 15), 3000000],
+                [Date.UTC(2010, 9 - 1, 6), 1342000],
+                [Date.UTC(2010, 9 - 1, 16), 1503000],
+                [Date.UTC(2010, 9 - 1, 19), 3023000],
+                [Date.UTC(2010, 9 - 1, 22), 11109000],
+                [Date.UTC(2010, 10 - 1, 23), 1794000],
+                [Date.UTC(2011, 3 - 1, 13), 2100000],
+                [Date.UTC(2011, 4 - 1, 17), 1920000],
+                [Date.UTC(2011, 4 - 1, 17, 1), 3938000],
+                [Date.UTC(2011, 4 - 1, 25), 904000],
+                [Date.UTC(2011, 5 - 1, 1), 1964000],
+                [Date.UTC(2011, 5 - 1, 6), 3429000],
+                [Date.UTC(2011, 5 - 1, 6, 1), 1873000],
+                [Date.UTC(2011, 5 - 1, 7), 1629000],
+                [Date.UTC(2011, 5 - 1, 13), 5784000],
+                [Date.UTC(2011, 5 - 1, 21), 1138000],
+                [Date.UTC(2011, 5 - 1, 21, 1), 2866000],
+                [Date.UTC(2011, 5 - 1, 21, 2), 2260000],
+                [Date.UTC(2011, 5 - 1, 29), 3823000],
+                [Date.UTC(2011, 6 - 1, 18), 8820000],
+                [Date.UTC(2011, 6 - 1, 19), 3711000],
+                [Date.UTC(2011, 6 - 1, 19, 1), 1611000],
+                [Date.UTC(2011, 7 - 1, 2), 2686000],
+                [Date.UTC(2011, 7 - 1, 9), 6364000],
+                [Date.UTC(2011, 7 - 1, 16), 4979000],
+                [Date.UTC(2011, 7 - 1, 31), 925000],
+                [Date.UTC(2011, 7 - 1, 31, 1), 1896000],
+                [Date.UTC(2011, 8 - 1, 9), 1924000],
+                [Date.UTC(2011, 8 - 1, 12), 3000000],
+                [Date.UTC(2011, 8 - 1, 13), 7786000],
+                [Date.UTC(2011, 8 - 1, 14), 10993000],
+                [Date.UTC(2011, 8 - 1, 20), 4927000],
+                [Date.UTC(2011, 8 - 1, 21), 5916000],
+                [Date.UTC(2011, 8 - 1, 27), 6733000],
+                [Date.UTC(2011, 9 - 1, 10), 4386000],
+                [Date.UTC(2011, 9 - 1, 11), 7495000],
+                [Date.UTC(2011, 9 - 1, 23), 1199000],
+            ]
+        },
+        {
+            name: 'Nova Factor 2',
+            color: '#FF6400',
+            yAxis: 'per_flight_y_axis',
+            data: [
+                [Date.UTC(2011, 12 - 1, 9), 585000],
+                [Date.UTC(2011, 12 - 1, 10), 250000],
+                [Date.UTC(2011, 12 - 1, 11), 547000],
+                [Date.UTC(2011, 12 - 1, 28), 603000],
+                [Date.UTC(2011, 12 - 1, 28, 1), 597000],
+                [Date.UTC(2011, 12 - 1, 28, 2), 600000],
+                [Date.UTC(2012, 1 - 1, 3), 620000],
+                [Date.UTC(2012, 1 - 1, 10), 530000],
+                [Date.UTC(2012, 1 - 1, 10, 1), 577000],
+                [Date.UTC(2012, 1 - 1, 30), 625000],
+                [Date.UTC(2012, 1 - 1, 30, 1), 600000],
+                [Date.UTC(2012, 1 - 1, 30, 2), 763000],
+                [Date.UTC(2012, 1 - 1, 30, 3), 793000],
+                [Date.UTC(2012, 1 - 1, 31), 1063000],
+                [Date.UTC(2012, 1 - 1, 31, 1), 648000],
+                [Date.UTC(2012, 2 - 1, 4), 520000],
+                [Date.UTC(2012, 3 - 1, 4), 685000],
+                [Date.UTC(2012, 3 - 1, 4, 1), 612000],
+                [Date.UTC(2012, 3 - 1, 11), 571000],
+                [Date.UTC(2012, 3 - 1, 13), 4049000],
+                [Date.UTC(2012, 3 - 1, 14), 1397000],
+                [Date.UTC(2012, 3 - 1, 14, 1), 831000],
+                [Date.UTC(2012, 3 - 1, 17), 1266000],
+                [Date.UTC(2012, 3 - 1, 18), 1120000],
+                [Date.UTC(2012, 3 - 1, 25), 9120000],
+                [Date.UTC(2012, 4 - 1, 22), 5873000],
+                [Date.UTC(2012, 4 - 1, 28), 5149000],
+                [Date.UTC(2012, 4 - 1, 28, 1), 5397000],
+                [Date.UTC(2012, 4 - 1, 29), 7962000],
+                [Date.UTC(2012, 5 - 1, 1), 2561000],
+                [Date.UTC(2012, 5 - 1, 5), 527000],
+                [Date.UTC(2012, 5 - 1, 5, 1), 697000],
+                [Date.UTC(2012, 5 - 1, 20), 3160000],
+                [Date.UTC(2012, 5 - 1, 26), 776000],
+                [Date.UTC(2012, 6 - 1, 2), 341000],
+                [Date.UTC(2012, 6 - 1, 29), 5573000],
+                [Date.UTC(2012, 6 - 1, 30), 13741000],
+                [Date.UTC(2012, 7 - 1, 7), 3762000],
+                [Date.UTC(2012, 7 - 1, 9), 11832000],
+                [Date.UTC(2012, 7 - 1, 14), 12024000],
+                [Date.UTC(2012, 7 - 1, 20), 3799000],
+                [Date.UTC(2012, 7 - 1, 21), 4046000],
+                [Date.UTC(2012, 7 - 1, 28), 2139000],
+                [Date.UTC(2012, 7 - 1, 28, 1), 2867000],
+                [Date.UTC(2012, 7 - 1, 29), 3684000],
+                [Date.UTC(2012, 8 - 1, 4), 11815000],
+                [Date.UTC(2012, 8 - 1, 5), 9995000],
+                [Date.UTC(2012, 8 - 1, 16), 8963000],
+                [Date.UTC(2012, 8 - 1, 18), 1088000],
+                [Date.UTC(2012, 8 - 1, 25), 5963000],
+                [Date.UTC(2012, 8 - 1, 26), 5726000],
+                [Date.UTC(2012, 8 - 1, 29), 1921000],
+                [Date.UTC(2012, 9 - 1, 1), 1623000],
+                [Date.UTC(2012, 9 - 1, 6), 2815000],
+                [Date.UTC(2012, 9 - 1, 9), 3733000],
+                [Date.UTC(2012, 9 - 1, 22), 554000],
+                [Date.UTC(2012, 9 - 1, 22, 1), 717000],
+                [Date.UTC(2012, 9 - 1, 23), 3190000],
+                [Date.UTC(2012, 9 - 1, 27), 3865000],
+                [Date.UTC(2012, 9 - 1, 30), 9827000],
+                [Date.UTC(2012, 10 - 1, 6), 7750000],
+                [Date.UTC(2012, 11 - 1, 17), 675000],
+                [Date.UTC(2012, 11 - 1, 18), 1722000],
+                [Date.UTC(2012, 12 - 1, 31), 867000],
+                [Date.UTC(2013, 1 - 1, 1), 459000],
+                [Date.UTC(2013, 1 - 1, 1, 1), 528000],
+                [Date.UTC(2013, 1 - 1, 20), 507000],
+                [Date.UTC(2013, 2 - 1, 16), 790000],
+                [Date.UTC(2013, 2 - 1, 16, 1), 663000],
+                [Date.UTC(2013, 3 - 1, 3), 978000],
+                [Date.UTC(2013, 3 - 1, 3, 1), 2132000],
+                [Date.UTC(2013, 3 - 1, 17), 3051000],
+                [Date.UTC(2013, 3 - 1, 30), 380000],
+                [Date.UTC(2013, 4 - 1, 1), 2673000],
+                [Date.UTC(2013, 4 - 1, 6), 13204000],
+                [Date.UTC(2013, 4 - 1, 13), 3445000],
+                [Date.UTC(2013, 4 - 1, 19), 542000],
+                [Date.UTC(2013, 4 - 1, 20), 4553000],
+                [Date.UTC(2013, 4 - 1, 21), 1552000],
+                [Date.UTC(2013, 4 - 1, 21, 1), 6615000],
+                [Date.UTC(2013, 4 - 1, 29), 603000],
+                [Date.UTC(2013, 4 - 1, 29, 1), 452000],
+                [Date.UTC(2013, 4 - 1, 29, 2), 17821000],
+                [Date.UTC(2013, 4 - 1, 30), 869000],
+                [Date.UTC(2013, 4 - 1, 30, 1), 508000],
+                [Date.UTC(2013, 4 - 1, 30, 2), 4113000],
+                [Date.UTC(2013, 5 - 1, 1), 6748000],
+                [Date.UTC(2013, 5 - 1, 2), 7680000],
+                [Date.UTC(2013, 5 - 1, 3), 2488000],
+                [Date.UTC(2013, 5 - 1, 4), 1056000],
+                [Date.UTC(2013, 5 - 1, 4, 1), 556000],
+                [Date.UTC(2013, 5 - 1, 11), 1534000],
+                [Date.UTC(2013, 5 - 1, 11, 1), 3307000],
+                [Date.UTC(2013, 5 - 1, 11, 2), 6025000],
+                [Date.UTC(2013, 5 - 1, 18), 9190000],
+                [Date.UTC(2013, 6 - 1, 1), 20223000],
+                [Date.UTC(2013, 6 - 1, 15), 822000],
+                [Date.UTC(2013, 6 - 1, 16), 18154000],
+                [Date.UTC(2013, 6 - 1, 28), 3911000],
+                [Date.UTC(2013, 6 - 1, 29), 6050000],
+                [Date.UTC(2013, 7 - 1, 2), 7302000],
+                [Date.UTC(2013, 7 - 1, 13), 2470000],
+                [Date.UTC(2013, 7 - 1, 15), 2580000],
+                [Date.UTC(2013, 7 - 1, 20), 122000],
+                [Date.UTC(2013, 7 - 1, 20, 1), 3241000],
+                [Date.UTC(2013, 7 - 1, 27), 7842000],
+                [Date.UTC(2013, 7 - 1, 28), 13753000],
+                [Date.UTC(2013, 8 - 1, 4), 7175000],
+                [Date.UTC(2013, 8 - 1, 17), 3506000],
+                [Date.UTC(2013, 8 - 1, 18), 7311000],
+                [Date.UTC(2013, 8 - 1, 24), 7875000],
+                [Date.UTC(2013, 8 - 1, 25), 6851000],
+                [Date.UTC(2013, 9 - 1, 8), 13639000],
+                [Date.UTC(2013, 9 - 1, 15), 7798000],
+                [Date.UTC(2013, 9 - 1, 21), 2039000],
+                [Date.UTC(2013, 9 - 1, 22), 4965000],
+                [Date.UTC(2013, 10 - 1, 5), 2374000],
+                [Date.UTC(2013, 10 - 1, 5, 1), 1916000],
+                [Date.UTC(2013, 10 - 1, 12), 1865000],
+                [Date.UTC(2013, 10 - 1, 26), 728000],
+                [Date.UTC(2013, 10 - 1, 26, 1), 759000],
+                [Date.UTC(2013, 12 - 1, 29), 614000],
+                [Date.UTC(2013, 12 - 1, 30), 1136000],
+                [Date.UTC(2014, 1 - 1, 11), 840000],
+                [Date.UTC(2014, 1 - 1, 11, 1), 894000],
+                [Date.UTC(2014, 1 - 1, 19), 603000],
+            ]
+        }]
+    ;
+    create_the_chart(flights_series);
+}
+
+$(function () {
+    $(document).ready(fetch_data_and_create_the_chart);
+});
+        </script>
+    </head>
+    <body>
+        <script src="http://code.highcharts.com/stock/highstock.js"></script>
+        <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
+
+        <div id="container" style="min-width: 600px; height: 600px; margin: 0 auto"></div>
+    </body>
+</html>
