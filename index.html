@@ -6,15 +6,45 @@
         <script type="text/javascript">
 
 function msec_to_hmm(msec) {
-    /* Remove leading zero from e.g. '03:45' */
-    return(Number(Highcharts.dateFormat('%H', msec)) +
-           Highcharts.dateFormat(':%M', msec));
+    var min = Math.round(msec % 3600000 / 60000);
+    return(Math.floor(msec / 3600000) + ':' + (min < 10 ? '0' + min : min));
+}
+
+function sum_durations(data, min, max) {
+    var sum_ms = 0;
+
+    for (var i = 0; i < data.length; i++) {
+        var cur_entry_date = data[i][0];
+
+        if (cur_entry_date >= min) {
+            if (cur_entry_date <= max) {
+                /* Add the current entry's duration. */
+                sum_ms += data[i][1];
+            } else {
+                break;
+            }
+        }
+    }
+
+    return(sum_ms);
+}
+
+function set_total(sum_ms) {
+    document.getElementById('total').innerHTML =
+        'Total hours: ' + msec_to_hmm(sum_ms);
+}
+
+function calc_and_set_total(data, min, max) {
+    var sum_ms = sum_durations(data, min, max);
+
+    set_total(sum_ms);
 }
 
 function create_the_chart(flights_series) {
     var navigator_data = flights_series[0].data.concat(flights_series[1].data);
 
-    var per_year = Array();
+    var per_year_data = Array();
+
     var cur_flight;
 
     for (var i = 0; i < flights_series.length; i++) {
@@ -23,42 +53,69 @@ function create_the_chart(flights_series) {
             cur_flight = flights_series[i].data[j];
             var cur_flight_hours = cur_flight[1] / 3600000;
 
-            var year = (new Date(cur_flight[0])).getFullYear();
-            var year_beg = Date.UTC(year,  1 - 1,  1);
-            var year_end = Date.UTC(year, 12 - 1, 31);
-
-            if (per_year.length == 0) {
+            if (per_year_data.length == 0) {
                 /* This is the first entry, start with its date instead of
                 Jan 1 on its year. */
-                per_year.push([cur_flight[0], cur_flight_hours]);
-                per_year.push([year_end, cur_flight_hours]);
-            } else if (per_year[per_year.length - 1][0] != year_end) {
-                /* New year. */
-                per_year.push([year_beg, cur_flight_hours]);
-                per_year.push([year_end, cur_flight_hours]);
+                per_year_data.push([cur_flight[0], cur_flight_hours]);
             } else {
-                /* Same year, increment the amount. */
-                per_year[per_year.length - 2][1] += cur_flight_hours;
-                per_year[per_year.length - 1][1] += cur_flight_hours;
+                var last_entry = per_year_data[per_year_data.length - 1];
+                var last_entry_year = (new Date(last_entry[0])).getFullYear();
+                var cur_flight_year = (new Date(cur_flight[0])).getFullYear();
+
+                if (last_entry_year != cur_flight_year) { /* New year. */
+                    var year_beg = Date.UTC(cur_flight_year, 1 - 1, 1);
+                    per_year_data.push([year_beg, cur_flight_hours]);
+                } else { /* Same year, increment the amount. */
+                    last_entry[1] += cur_flight_hours;
+                }
             }
         }
     }
-    /* For the last year do not use Dec 31, but the date of the last entry. */
-    per_year[per_year.length - 1][0] = cur_flight[0];
+    /* For the last year, append an entry with the last flight's date and
+    an amount of hours = the accumulated hours for the last year. */
+    var last_year_hours = per_year_data[per_year_data.length - 1][1];
+    per_year_data.push({
+        x: cur_flight[0],
+        y: last_year_hours,
+        dataLabels: {
+            enabled: false,
+        },
+    });
 
     var per_year_series = {
-        name: 'per year',
         color: '#CCCCCC',
+        enableMouseTracking: false,
+        data: per_year_data,
+        dataLabels: {
+            align: 'left',
+            backgroundColor: 'rgba(220, 220, 220, 0.9)',
+            borderRadius: 5,
+            enabled: true,
+            formatter: function () {
+                return(msec_to_hmm(this.y * 3600000) + ' (' +
+                       (new Date(this.x)).getFullYear() + ')');
+            },
+            x: 15,
+        },
+        name: 'per year',
+        step: true,
+        type: 'line',
         yAxis: 'per_year_y_axis',
-        type: 'area',
         zIndex: -1,
-        data: per_year,
     };
 
     flights_series.push(per_year_series);
 
     $("#container").highcharts("StockChart", {
         chart: {
+            events: {
+                load: function (e) {
+                    calc_and_set_total(
+                        e.currentTarget.options.navigator.series.data,
+                        this.xAxis[0].dataMin,
+                        this.xAxis[0].dataMax);
+                },
+            },
             type: 'column',
             zoomType: 'x',
         },
@@ -70,6 +127,15 @@ function create_the_chart(flights_series) {
 	        color: '#888888',
             },
         },
+        //labels: {
+        //    items: [{
+        //        html: 'total hours: ',
+        //        style: {
+        //            left: '20px',
+        //            top: '20px',
+        //        },
+        //    }],
+        //},
         rangeSelector: {
             /* From "1m, 3m, 6m, YTD, 1y, All" select "All". */
             selected: 5,
@@ -83,16 +149,25 @@ function create_the_chart(flights_series) {
         },
         */
         xAxis: {
-            type: 'datetime',
-            ordinal: false,
+            events: {
+                afterSetExtremes: function (e) {
+                    // Here we have e.min, e.max, this.dataMin, this.dataMax
+                    calc_and_set_total(
+                        this.chart.options.navigator.series.data,
+                        e.min,
+                        e.max);
+                },
+            },
             labels: {
                 formatter: function () {
                     return(Highcharts.dateFormat('%d %b %Y', this.value));
-                }
+                },
             },
+            ordinal: false,
             title: {
                 text: 'дата'
             },
+            type: 'datetime',
         },
         yAxis: [
             {
@@ -112,10 +187,13 @@ function create_the_chart(flights_series) {
                 id: 'per_year_y_axis',
                 min: 0,
                 type: 'linear',
-                gridLineDashStyle: 'LongDash',
+                gridLineWidth: 0,
                 opposite: true,
                 title: {
                     text: 'часове / година'
+                },
+                labels: {
+                    enabled: false,
                 },
             },
         ],
@@ -418,6 +496,7 @@ $(function () {
         <script src="http://code.highcharts.com/stock/highstock.js"></script>
         <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
 
-        <div id="container" style="min-width: 600px; height: 600px; margin: 0 auto"></div>
+        <div id="container" style="min-width: 600px; height: 700px; margin: 0 auto"></div>
+        <div id="total" style='font-family: "Lucida Grande", "Lucida Sans Unicode", Verdana, Arial, Helvetica, sans-serif; font-size: 12px; position: absolute; color: #3E576F; fill:#3E576F; top: 60px; left: 42px;'></div>
     </body>
 </html>
