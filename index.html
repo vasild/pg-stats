@@ -40,8 +40,12 @@ function calc_and_set_total(data, min, max) {
     set_total(sum_ms);
 }
 
-function calc_navigator_data(flights_series) {
+function flatten_series_data(flights_series) {
     return(flights_series[0].data.concat(flights_series[1].data));
+}
+
+function calc_navigator_data(flights_series) {
+    return(flatten_series_data(flights_series));
 }
 
 function calc_per_year_data(flights_series) {
@@ -116,12 +120,28 @@ function calc_per_year_series(flights_series) {
     return(per_year_series);
 }
 
+function calc_and_set_per_wing_duration(flights_series) {
+
+    var data = flatten_series_data(flights_series);
+
+    var sum_bright3_ms = sum_durations(
+        data, data[0][0], Date.UTC(2011, 12 - 1, 8));
+
+    var sum_factor2_ms = sum_durations(
+        data, Date.UTC(2011, 12 - 1, 9), data[data.length - 1][0]);
+
+    flights_series[0].name += ' (' + msec_to_hmm(sum_bright3_ms) + ')';
+    flights_series[1].name += ' (' + msec_to_hmm(sum_factor2_ms) + ')';
+}
+
 function create_the_chart(flights_series) {
     var per_year_series = calc_per_year_series(flights_series);
 
     flights_series.push(per_year_series);
 
     var navigator_data = calc_navigator_data(flights_series);
+
+    calc_and_set_per_wing_duration(flights_series);
 
     $("#container").highcharts("StockChart", {
         chart: {
