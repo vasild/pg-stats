@@ -40,9 +40,11 @@ function calc_and_set_total(data, min, max) {
     set_total(sum_ms);
 }
 
-function create_the_chart(flights_series) {
-    var navigator_data = flights_series[0].data.concat(flights_series[1].data);
+function calc_navigator_data(flights_series) {
+    return(flights_series[0].data.concat(flights_series[1].data));
+}
 
+function calc_per_year_data(flights_series) {
     var per_year_data = Array();
 
     var cur_flight;
@@ -82,6 +84,13 @@ function create_the_chart(flights_series) {
         },
     });
 
+    return(per_year_data);
+}
+
+function calc_per_year_series(flights_series) {
+
+    var per_year_data = calc_per_year_data(flights_series);
+
     var per_year_series = {
         color: '#CCCCCC',
         enableMouseTracking: false,
@@ -104,7 +113,15 @@ function create_the_chart(flights_series) {
         zIndex: -1,
     };
 
+    return(per_year_series);
+}
+
+function create_the_chart(flights_series) {
+    var per_year_series = calc_per_year_series(flights_series);
+
     flights_series.push(per_year_series);
+
+    var navigator_data = calc_navigator_data(flights_series);
 
     $("#container").highcharts("StockChart", {
         chart: {
