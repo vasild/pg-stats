@@ -109,6 +109,7 @@ function create_the_chart(series_obj) {
             formatter: function() {
                 return(
                     Highcharts.dateFormat('%b %d %Y', this.x) +
+                    ', ' + this.points[0].point.options.name +
                     ': ' + msec_to_hmm(this.y));
             }
         },
@@ -130,9 +131,11 @@ function create_the_chart(series_obj) {
                     events: {
                         click: function () {
                             window.open(
-                                'http://www.paraglidingforum.com/leonardo/tracks/world/' +
+                                "http://forum.skynomad.net/leonardo/tracks/" +
+                                "world/" +
                                 Highcharts.dateFormat('%Y.%m.%d', this.x) +
-                                '/brand:all,cat:0,class:all,xctype:all,club:all,pilot:0_19778,takeoff:all');
+                                "/brand:all,cat:0,class:all," +
+                                "xctype:all,club:all,pilot:0_2710,takeoff:all");
                         }
                     }
                 },
