@@ -162,11 +162,11 @@ function fetch_data() {
         }
     }
 
-    xhr.open('GET', 'data.json', false /* sync */);
+    xhr.open('GET', 'd.json', false /* sync */);
     xhr.send();
 
     if (data_str == null) {
-        alert("Failed to fetch 'data.json'");
+        alert("Failed to fetch 'd.json'");
         return(null);
     }
 
@@ -175,49 +175,23 @@ function fetch_data() {
     try {
         data_array = JSON.parse(data_str);
     } catch (e) {
-        alert("Cannot parse 'data.json': ", e);
+        alert("Cannot parse 'd.json': ", e);
         return(null);
     }
 
     return(data_array);
 }
 
-function parse_data_entry_from_json(json_entry) {
-    // ["2008.07.07-novachene-6-000416"],
-    // ["2008.09.07-a-okolchica-2-014800"],
-    // ["2008.09.07-b-montana-1-001700"],
-    var re = /([0-9]{4})\.([0-9]{2})\.([0-9]{2})-([a-z]-){0,1}([^-]+).*([0-9]{2})([0-9]{2})([0-9]{2})/;
-
-    var entries_array = re.exec(json_entry);
-
-    if (entries_array == null) {
-        alert("Cannot parse entry from data.json: " + json_entry);
-        return(null);
-    }
-
-    var flight_obj = {
-        year: entries_array[1],
-        month: entries_array[2],
-        day: entries_array[3],
-        takeoff: entries_array[5],
-        hh: Number(entries_array[6]),
-        mm: Number(entries_array[7]),
-        ss: Number(entries_array[8]),
-    };
-
-    return(flight_obj);
-}
-
 function flight_timestamp(f) {
-    return(Date.UTC(f.year, f.month - 1, f.day));
+    return(Date.UTC(f.date.y, f.date.m - 1, f.date.d));
 }
 
 function calc_flight_entry(cur_flight_obj, prev_flight_obj, n_flights_today) {
 
     if (prev_flight_obj != null &&
-        cur_flight_obj.year == prev_flight_obj.year &&
-        cur_flight_obj.month == prev_flight_obj.month &&
-        cur_flight_obj.day == prev_flight_obj.day) {
+        cur_flight_obj.date.y == prev_flight_obj.date.y &&
+        cur_flight_obj.date.m == prev_flight_obj.date.m &&
+        cur_flight_obj.date.d == prev_flight_obj.date.d) {
 
         n_flights_today.val++;
     } else {
@@ -225,27 +199,38 @@ function calc_flight_entry(cur_flight_obj, prev_flight_obj, n_flights_today) {
     }
 
     var entry_main = {
-        x: Date.UTC(Number(cur_flight_obj.year),
-                    Number(cur_flight_obj.month) - 1,
-                    Number(cur_flight_obj.day),
-                    n_flights_today.val),
-        y: (Number(cur_flight_obj.hh) * 3600 +
-            Number(cur_flight_obj.mm) * 60 +
-            Number(cur_flight_obj.ss)) * 1000,
+        x: Date.UTC(Number(cur_flight_obj.date.y),
+                    Number(cur_flight_obj.date.m) - 1,
+                    Number(cur_flight_obj.date.d),
+                    n_flights_today.val /* hour */),
+        y: (Number(cur_flight_obj.duration.h) * 3600 +
+            Number(cur_flight_obj.duration.m) * 60 +
+            Number(cur_flight_obj.duration.s)) * 1000,
         name: cur_flight_obj.takeoff,
     };
 
     return(entry_main);
 }
 
-function add_flight_to_per_flight(entry, per_flight) {
+function add_flight_to_per_flight(entry, glider, per_flight) {
     /* Flights with Gradient Bright 3 are before Dec 9 2011. */
-    if (entry.x < Date.UTC(2011, 12 - 1, 9)) {
+    if (glider == "b3") {
         per_flight.bright3_data.push(entry);
         per_flight.bright3_dur_ms += entry.y;
-    } else {
+    } else if (glider == "f2") {
         per_flight.factor2_data.push(entry);
         per_flight.factor2_dur_ms += entry.y;
+    } else if (glider == "s9") {
+        per_flight.sigma9_data.push(entry);
+        per_flight.sigma9_dur_ms += entry.y;
+    } else if (glider == "m4") {
+        per_flight.mentor4_data.push(entry);
+        per_flight.mentor4_dur_ms += entry.y;
+    } else if (glider == "t3") {
+        per_flight.takoo3_data.push(entry);
+        per_flight.takoo3_dur_ms += entry.y;
+    } else {
+        alert("Unknown glider: " + glider + ". Will not be shown.");
     }
 }
 
@@ -256,9 +241,9 @@ function add_flight_to_navigator(entry, data) {
 function add_flight_to_per_year(cur_flight_obj, prev_flight_obj, data) {
 
     var cur_flight_seconds =
-        cur_flight_obj.hh * 3600 +
-        cur_flight_obj.mm * 60 +
-        cur_flight_obj.ss;
+        cur_flight_obj.duration.h * 3600 +
+        cur_flight_obj.duration.m * 60 +
+        cur_flight_obj.duration.s;
 
     var cur_flight_timestamp = flight_timestamp(cur_flight_obj);
 
@@ -266,13 +251,13 @@ function add_flight_to_per_year(cur_flight_obj, prev_flight_obj, data) {
         /* This is the first flight, start with its date instead of Jan 1 on
         its year. */
         data.push({x: cur_flight_timestamp, y: cur_flight_seconds});
-    } else if (cur_flight_obj.year == prev_flight_obj.year) {
+    } else if (cur_flight_obj.date.y == prev_flight_obj.date.y) {
         /* Same year, increment the amount. */
         data[data.length - 1].y += cur_flight_seconds;
     } else {
         /* New year, but not the very first one. */
         data.push({
-            x: Date.UTC(cur_flight_obj.year, 1 - 1, 1),
+            x: Date.UTC(cur_flight_obj.date.y, 1 - 1, 1),
             y: cur_flight_seconds,
         });
     }
@@ -283,8 +268,14 @@ function create_series(data_array) {
     var per_flight = {
         bright3_data: Array(),
         factor2_data: Array(),
+        sigma9_data: Array(),
+        mentor4_data: Array(),
+        takoo3_data: Array(),
         bright3_dur_ms: 0,
         factor2_dur_ms: 0,
+        sigma9_dur_ms: 0,
+        mentor4_dur_ms: 0,
+        takoo3_dur_ms: 0,
     };
 
     var navigator_data = Array();
@@ -294,12 +285,12 @@ function create_series(data_array) {
     var n_flights_today = { val: 1 };
     for (var i = 0; i < data_array.length; i++) {
 
-        var cur_flight_obj = parse_data_entry_from_json(data_array[i]);
+        var cur_flight_obj = data_array[i];
 
         var entry = calc_flight_entry(cur_flight_obj, prev_flight_obj,
                                       n_flights_today);
 
-        add_flight_to_per_flight(entry, per_flight);
+        add_flight_to_per_flight(entry, cur_flight_obj.glider, per_flight);
 
         add_flight_to_navigator(entry, navigator_data);
 
@@ -328,10 +319,31 @@ function create_series(data_array) {
                 yAxis: 'per_flight_y_axis',
             },
             {
-                color: '#FF6400',
+                color: '#FF9400',
                 data: per_flight.factor2_data,
                 name: 'Nova Factor 2 (' +
                     msec_to_hmm(per_flight.factor2_dur_ms) + ')',
+                yAxis: 'per_flight_y_axis',
+            },
+            {
+                color: '#A07800',
+                data: per_flight.sigma9_data,
+                name: 'Advance Sigma 9 (' +
+                    msec_to_hmm(per_flight.sigma9_dur_ms) + ')',
+                yAxis: 'per_flight_y_axis',
+            },
+            {
+                color: '#3429FF',
+                data: per_flight.mentor4_data,
+                name: 'Nova Mentor 4 (' +
+                    msec_to_hmm(per_flight.mentor4_dur_ms) + ')',
+                yAxis: 'per_flight_y_axis',
+            },
+            {
+                color: '#F4D746',
+                data: per_flight.takoo3_data,
+                name: 'Niviuk Takoo 3 (' +
+                    msec_to_hmm(per_flight.takoo3_dur_ms) + ')',
                 yAxis: 'per_flight_y_axis',
             },
             {
@@ -357,7 +369,7 @@ function create_series(data_array) {
             },
         ],
         navigator: {
-	    color: '#888888',
+            color: '#888888',
             data: navigator_data,
             type: 'column',
         },
@@ -380,4 +392,3 @@ function fetch_data_and_create_the_chart() {
 
     create_the_chart(series);
 }
-
