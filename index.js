@@ -37,6 +37,7 @@ function create_the_chart(series_obj) {
 
     $("#chart_container").highcharts("StockChart", {
         chart: {
+            backgroundColor: '#EEEEEE',
             type: 'column',
             zoomType: 'x',
         },
@@ -213,7 +214,6 @@ function calc_flight_entry(cur_flight_obj, prev_flight_obj, n_flights_today) {
 }
 
 function add_flight_to_per_flight(entry, glider, per_flight) {
-    /* Flights with Gradient Bright 3 are before Dec 9 2011. */
     if (glider == "b3") {
         per_flight.bright3_data.push(entry);
         per_flight.bright3_dur_ms += entry.y;
@@ -229,6 +229,9 @@ function add_flight_to_per_flight(entry, glider, per_flight) {
     } else if (glider == "t3") {
         per_flight.takoo3_data.push(entry);
         per_flight.takoo3_dur_ms += entry.y;
+    } else if (glider == "s10") {
+        per_flight.sigma10_data.push(entry);
+        per_flight.sigma10_dur_ms += entry.y;
     } else {
         alert("Unknown glider: " + glider + ". Will not be shown.");
     }
@@ -271,11 +274,13 @@ function create_series(data_array) {
         sigma9_data: Array(),
         mentor4_data: Array(),
         takoo3_data: Array(),
+        sigma10_data: Array(),
         bright3_dur_ms: 0,
         factor2_dur_ms: 0,
         sigma9_dur_ms: 0,
         mentor4_dur_ms: 0,
         takoo3_dur_ms: 0,
+        sigma10_dur_ms: 0,
     };
 
     var navigator_data = Array();
@@ -344,6 +349,13 @@ function create_series(data_array) {
                 data: per_flight.takoo3_data,
                 name: 'Niviuk Takoo 3 (' +
                     msec_to_hmm(per_flight.takoo3_dur_ms) + ')',
+                yAxis: 'per_flight_y_axis',
+            },
+            {
+                color: '#FFFFFF',
+                data: per_flight.sigma10_data,
+                name: 'Advance Sigma 10 (' +
+                    msec_to_hmm(per_flight.sigma10_dur_ms) + ')',
                 yAxis: 'per_flight_y_axis',
             },
             {
