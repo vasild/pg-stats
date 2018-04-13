@@ -6032,5 +6032,761 @@
       "m": 20,
       "s": 49
     }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 6,
+      "d": 26
+    },
+    "glider": "s10a",
+    "takeoff": "kobala",
+    "duration": {
+      "h": 3,
+      "m": 40,
+      "s": 3
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 1
+    },
+    "glider": "s10a",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 1,
+      "m": 19,
+      "s": 48
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 2
+    },
+    "glider": "s10a",
+    "takeoff": "kobala",
+    "duration": {
+      "h": 0,
+      "m": 13,
+      "s": 34
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 3
+    },
+    "glider": "s10a",
+    "takeoff": "kobala",
+    "duration": {
+      "h": 0,
+      "m": 14,
+      "s": 54
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 6
+    },
+    "glider": "s10a",
+    "takeoff": "kobala",
+    "duration": {
+      "h": 4,
+      "m": 21,
+      "s": 13
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 8
+    },
+    "glider": "s10a",
+    "takeoff": "kobala",
+    "duration": {
+      "h": 1,
+      "m": 54,
+      "s": 23
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 22
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 8,
+      "s": 32
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 23
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 5,
+      "s": 7
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 23
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 5,
+      "s": 26
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 30
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 22,
+      "s": 12
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 7,
+      "d": 31
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 5,
+      "s": 59
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 1
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 2,
+      "m": 14,
+      "s": 47
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 3
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 6,
+      "m": 20,
+      "s": 39
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 4
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 0,
+      "m": 22,
+      "s": 20
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 4
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 1,
+      "m": 15,
+      "s": 4
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 5
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 0,
+      "m": 8,
+      "s": 23
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 5
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 5,
+      "m": 3,
+      "s": 5
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 7
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 5,
+      "m": 32,
+      "s": 44
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 9
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 0,
+      "m": 23,
+      "s": 4
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 9
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 3,
+      "m": 10,
+      "s": 39
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 10
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 5,
+      "m": 19,
+      "s": 35
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 11
+    },
+    "glider": "s10a",
+    "takeoff": "shumen",
+    "duration": {
+      "h": 0,
+      "m": 25,
+      "s": 27
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 12
+    },
+    "glider": "s10a",
+    "takeoff": "nevsha",
+    "duration": {
+      "h": 6,
+      "m": 0,
+      "s": 58
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 19
+    },
+    "glider": "s10a",
+    "takeoff": "bezbog",
+    "duration": {
+      "h": 0,
+      "m": 15,
+      "s": 45
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 20
+    },
+    "glider": "s10a",
+    "takeoff": "okolchica",
+    "duration": {
+      "h": 2,
+      "m": 57,
+      "s": 9
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 8,
+      "d": 26
+    },
+    "glider": "s10a",
+    "takeoff": "okolchica",
+    "duration": {
+      "h": 4,
+      "m": 11,
+      "s": 24
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 9,
+      "d": 2
+    },
+    "glider": "s10a",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 3,
+      "m": 54,
+      "s": 41
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 9,
+      "d": 16
+    },
+    "glider": "s10a",
+    "takeoff": "konqvo",
+    "duration": {
+      "h": 1,
+      "m": 39,
+      "s": 0
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 9,
+      "d": 17
+    },
+    "glider": "s10a",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 3,
+      "m": 49,
+      "s": 43
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 9,
+      "d": 24
+    },
+    "glider": "s10a",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 4,
+      "m": 20,
+      "s": 20
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 9,
+      "d": 30
+    },
+    "glider": "s10a",
+    "takeoff": "okolchica",
+    "duration": {
+      "h": 0,
+      "m": 14,
+      "s": 26
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 10,
+      "d": 1
+    },
+    "glider": "s10a",
+    "takeoff": "okolchica",
+    "duration": {
+      "h": 2,
+      "m": 7,
+      "s": 25
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 10,
+      "d": 15
+    },
+    "glider": "s10a",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 1,
+      "m": 55,
+      "s": 25
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 11,
+      "d": 5
+    },
+    "glider": "s10a",
+    "takeoff": "konqvo",
+    "duration": {
+      "h": 0,
+      "m": 50,
+      "s": 6
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 11,
+      "d": 26
+    },
+    "glider": "s10a",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 0,
+      "m": 15,
+      "s": 44
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 12,
+      "d": 30
+    },
+    "glider": "s10a",
+    "takeoff": "drama",
+    "duration": {
+      "h": 0,
+      "m": 12,
+      "s": 16
+    }
+  },
+  {
+    "date": {
+      "y": 2017,
+      "m": 12,
+      "d": 31
+    },
+    "glider": "s10a",
+    "takeoff": "drama",
+    "duration": {
+      "h": 0,
+      "m": 10,
+      "s": 33
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 1,
+      "d": 1
+    },
+    "glider": "s10a",
+    "takeoff": "kafalari",
+    "duration": {
+      "h": 0,
+      "m": 9,
+      "s": 45
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 1,
+      "d": 1
+    },
+    "glider": "s10a",
+    "takeoff": "kafalari",
+    "duration": {
+      "h": 0,
+      "m": 7,
+      "s": 54
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 1,
+      "d": 2
+    },
+    "glider": "s10a",
+    "takeoff": "kafalari",
+    "duration": {
+      "h": 0,
+      "m": 9,
+      "s": 29
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 1,
+      "d": 6
+    },
+    "glider": "f2",
+    "takeoff": "kalen",
+    "duration": {
+      "h": 1,
+      "m": 19,
+      "s": 31
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 1,
+      "d": 7
+    },
+    "glider": "f2",
+    "takeoff": "konqvo",
+    "duration": {
+      "h": 0,
+      "m": 14,
+      "s": 25
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 2,
+      "d": 11
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 2,
+      "m": 4,
+      "s": 50
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 2,
+      "d": 16
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 1,
+      "m": 15,
+      "s": 53
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 2,
+      "d": 17
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 2,
+      "m": 26,
+      "s": 40
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 4
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 0,
+      "m": 22,
+      "s": 31
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 14
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 0,
+      "m": 13,
+      "s": 59
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 21
+    },
+    "glider": "f2",
+    "takeoff": "bassano",
+    "duration": {
+      "h": 1,
+      "m": 17,
+      "s": 57
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 21
+    },
+    "glider": "f2",
+    "takeoff": "bassano",
+    "duration": {
+      "h": 0,
+      "m": 40,
+      "s": 16
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 24
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 2,
+      "m": 31,
+      "s": 31
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 3,
+      "d": 25
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 2,
+      "m": 8,
+      "s": 47
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 4,
+      "d": 1
+    },
+    "glider": "f2",
+    "takeoff": "bassano",
+    "duration": {
+      "h": 1,
+      "m": 29,
+      "s": 38
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 4,
+      "d": 2
+    },
+    "glider": "f2",
+    "takeoff": "lijak",
+    "duration": {
+      "h": 3,
+      "m": 11,
+      "s": 33
+    }
+  },
+  {
+    "date": {
+      "y": 2018,
+      "m": 4,
+      "d": 8
+    },
+    "glider": "s10b",
+    "takeoff": "sopot",
+    "duration": {
+      "h": 3,
+      "m": 12,
+      "s": 23
+    }
   }
 ]
