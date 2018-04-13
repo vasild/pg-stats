@@ -232,6 +232,9 @@ function add_flight_to_per_flight(entry, glider, per_flight) {
     } else if (glider == "s10a") {
         per_flight.sigma10a_data.push(entry);
         per_flight.sigma10a_dur_ms += entry.y;
+    } else if (glider == "s10b") {
+        per_flight.sigma10b_data.push(entry);
+        per_flight.sigma10b_dur_ms += entry.y;
     } else {
         alert("Unknown glider: " + glider + ". Will not be shown.");
     }
@@ -275,12 +278,14 @@ function create_series(data_array) {
         mentor4_data: Array(),
         takoo3_data: Array(),
         sigma10a_data: Array(),
+        sigma10b_data: Array(),
         bright3_dur_ms: 0,
         factor2_dur_ms: 0,
         sigma9_dur_ms: 0,
         mentor4_dur_ms: 0,
         takoo3_dur_ms: 0,
         sigma10a_dur_ms: 0,
+        sigma10b_dur_ms: 0,
     };
 
     var navigator_data = Array();
@@ -356,6 +361,13 @@ function create_series(data_array) {
                 data: per_flight.sigma10a_data,
                 name: 'Advance Sigma 10 blue/white/orange (' +
                     msec_to_hmm(per_flight.sigma10a_dur_ms) + ')',
+                yAxis: 'per_flight_y_axis',
+            },
+            {
+                color: '#FFFFFF',
+                data: per_flight.sigma10b_data,
+                name: 'Advance Sigma 10 orange/white/blue (' +
+                    msec_to_hmm(per_flight.sigma10b_dur_ms) + ')',
                 yAxis: 'per_flight_y_axis',
             },
             {
